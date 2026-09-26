@@ -1,0 +1,1 @@
+"""ShopGraph FastAPI backend package."""
