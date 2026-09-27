@@ -1,5 +1,7 @@
 import type { ApiEnvelope, Product, SearchResult } from '../types'
-const base = import.meta.env.VITE_API_BASE_URL || 'http://127.0.0.1:8000'
+const base = import.meta.env.DEV
+ ? ''
+ : (import.meta.env.VITE_API_BASE_URL || '').replace(/\/+$/, '')
 async function request<T>(path:string, init?:RequestInit):Promise<T>{
  const res=await fetch(`${base}${path}`,{headers:{'Content-Type':'application/json'},...init}); const body=await res.json().catch(()=>null)
  if(!res.ok) throw new Error(body?.detail || 'The ShopGraph service is unavailable.')

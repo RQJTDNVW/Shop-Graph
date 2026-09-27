@@ -2,6 +2,7 @@ from pathlib import Path
 from typing import Any
 
 import json
+import os
 import re
 import sys
 import time
@@ -139,18 +140,26 @@ def startup_event():
     # Recommendation engine
     # --------------------------------------------------------
 
-    try:
-        from src.recommendation.recommendation_engine_v3 import (
-            RecommendationEngineV3
+    if os.getenv("SHOPGRAPH_ENABLE_RECOMMENDATIONS", "").lower() in {
+        "1", "true", "yes"
+    }:
+        try:
+            from src.recommendation.recommendation_engine_v3 import (
+                RecommendationEngineV3
+            )
+
+            recommendation_engine = RecommendationEngineV3()
+
+            print("[OK] Recommendation Engine V3.1 loaded")
+
+        except Exception as exc:
+            print("[WARNING] Recommendation engine unavailable:")
+            print(exc)
+    else:
+        print(
+            "[INFO] Recommendation engine loading is disabled. "
+            "Set SHOPGRAPH_ENABLE_RECOMMENDATIONS=true to enable it."
         )
-
-        recommendation_engine = RecommendationEngineV3()
-
-        print("[OK] Recommendation Engine V3.1 loaded")
-
-    except Exception as exc:
-        print("[WARNING] Recommendation engine unavailable:")
-        print(exc)
 
     print("=" * 70)
     print("ShopGraph API startup complete")
